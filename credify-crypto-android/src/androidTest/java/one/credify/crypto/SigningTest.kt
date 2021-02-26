@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class SigningTest {
@@ -91,5 +92,46 @@ class SigningTest {
         val result = key.verifyBase64(signedMessage, message, Base64Option.DEFAULT)
 
         assertEquals(result, true)
+    }
+
+    @Test
+    fun listStringToStringTest() {
+        val result = "fun private public test Kotlin"
+        val list = listOf("fun", "private", "public", "test", "Kotlin")
+
+        val listToString = list.joinToString(" ")
+
+        assertEquals(result, listToString)
+    }
+
+    @Test
+    fun generateApprovalTokenTest() {
+        val key = KeyCreator().createSigningKey()
+        val id = UUID.randomUUID().toString()
+        val clientId = UUID.randomUUID().toString()
+        val scopeList = listOf("profile", "email", "address")
+        val offerCode = "tiki-code"
+
+        val approvalToken = key.generateApprovalToken(id, clientId, scopeList, offerCode)
+
+        assertNotNull(approvalToken)
+    }
+
+    @Test
+    fun generateRequestTokenTest() {
+        val signingKey = KeyCreator().createSigningKey()
+        val encryptionKey = KeyCreator().createEncryptionKey()
+        val clientId = UUID.randomUUID().toString()
+        val scopeList = listOf("profile", "email", "address")
+        val offerCode = "tiki-code"
+
+        val requestToken = signingKey.generateRequestToken(
+            clientId,
+            encryptionKey.publicKeyAsPKSC8!!,
+            scopeList,
+            offerCode
+        )
+
+        assertNotNull(requestToken)
     }
 }

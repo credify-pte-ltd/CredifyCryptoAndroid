@@ -33,4 +33,24 @@ interface Signing : KeyPairExportable {
      * Generate a signature with JWT format by the signing key
      */
     fun generateLoginToken(): String
+
+    /**
+     * Generate an approval token needed for OIDC completion.
+     */
+    fun generateApprovalToken(
+        id: String,
+        clientId: String,
+        scopeList: List<String>,
+        offerCode: String?
+    ): String
+
+    /**
+     * Generate a request token needed for OIDC initiation.
+     */
+    fun generateRequestToken(
+        clientId: String,
+        encryptionPublicKey: String,
+        scopeList: List<String>,
+        offerCode: String?
+    ): String
 }

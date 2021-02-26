@@ -119,6 +119,15 @@ internal class SigningImpl : KeyPair<SigningKey, VerificationKey>, Signing {
         }
     }
 
+    /**
+     * Return private key that is encrypted by [password]
+     */
+    override fun exportPrivateKey(password: String): String {
+        requireNotNull(mPrivateKey, { "Private key must not be null" })
+
+        return mPrivateKey!!.export(password)
+    }
+
     override fun generateLoginToken(): String {
         requireNotNull(mPrivateKey, { "Private key must not be null" })
         requireNotNull(mPublicKey, { "Public key must not be null" })
@@ -127,12 +136,37 @@ internal class SigningImpl : KeyPair<SigningKey, VerificationKey>, Signing {
     }
 
     /**
-     * Return private key that is encrypted by [password]
+     * Generate an approval token needed for OIDC completion.
      */
-    override fun exportPrivateKey(password: String): String {
-        requireNotNull(mPrivateKey, { "Private key must not be null" })
+    override fun generateApprovalToken(
+        id: String,
+        clientId: String,
+        scopeList: List<String>,
+        offerCode: String?
+    ): String {
+        val privateKey = mPrivateKey
 
-        return mPrivateKey!!.export(password)
+        requireNotNull(privateKey, { "Private key must not be null" })
+
+        val scopeString = scopeList.joinToString(" ")
+        return Crypto.newApprovalToken(privateKey, id, clientId, scopeString, offerCode)
+    }
+
+    /**
+     * Generate a request token needed for OIDC initiation.
+     */
+    override fun generateRequestToken(
+        clientId: String,
+        encryptionPublicKey: String,
+        scopeList: List<String>,
+        offerCode: String?
+    ): String {
+        val privateKey = mPrivateKey
+
+        requireNotNull(privateKey, { "Private key must not be null" })
+
+        val scopeString = scopeList.joinToString(" ")
+        return Crypto.newRequestToken(privateKey, clientId, encryptionPublicKey, scopeString, offerCode)
     }
 
     companion object {

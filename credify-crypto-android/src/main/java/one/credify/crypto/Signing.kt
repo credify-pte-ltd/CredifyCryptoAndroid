@@ -9,27 +9,11 @@ interface Signing : KeyPairExportable {
     fun sign(message: ByteArray): ByteArray
 
     /**
-     * Generate a signature of provided [message] message.
-     * The [message] was encoded with base 64 url
-     *
-     * @return a [ByteArray] that was signed
-     */
-    fun signBase64(message: String): ByteArray
-
-    /**
      * Generate a signature of provided [message] message
      *
-     * @return a string that was signed and encoded with base 64 url
+     * @return a string that was signed and encoded with base 64 [option] format
      */
-    fun signAsBase64(message: ByteArray): String
-
-    /**
-     * Generate a signature of provided [message] message.
-     * The [message] was encoded with base 64 url
-     *
-     * @return a string that was signed and encoded with base 64 url
-     */
-    fun signBase64AsBase64(message: String): String
+    fun signAsBase64(message: ByteArray, option: Base64Option): String
 
     /**
      * Verify a [signature] signature
@@ -39,11 +23,11 @@ interface Signing : KeyPairExportable {
     fun verify(signature: ByteArray, message: ByteArray): Boolean
 
     /**
-     * Verify a [signature] signature that was encoded with base 64 url
+     * Verify a [signature] signature that was encoded with base 64 [option] format
      *
      * @return true if the [signature] is valid. Otherwise, return false
      */
-    fun verifyBase64(signature: String, message: ByteArray): Boolean
+    fun verifyBase64(signature: String, message: ByteArray, option: Base64Option): Boolean
 
     /**
      * Generate a signature with JWT format by the signing key

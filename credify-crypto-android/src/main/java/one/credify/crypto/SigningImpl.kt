@@ -5,31 +5,49 @@ import crypto.SigningKey
 import crypto.VerificationKey
 
 internal class SigningImpl : KeyPair<SigningKey, VerificationKey>, Signing {
+    /**
+     * Return private key in PKCS8 format
+     */
     override val privateKeyAsPKCS8: String?
         get() {
             return mPrivateKey?.string()
         }
 
+    /**
+     * Return private key that is encoded with base64 url
+     */
     override val privateKeyAsBase64Url: String?
         get() {
             return mPrivateKey?.stringParam()
         }
 
+    /**
+     * Return public key in [ByteArray]
+     */
     override val privateKeyAsBytes: ByteArray?
         get() {
             return mPrivateKey?.bytes()
         }
 
+    /**
+     * Return public key in PKCS8 format
+     */
     override val publicKeyAsPKSC8: String?
         get() {
             return mPublicKey?.string()
         }
 
+    /**
+     * Return public key that is encoded with base64 url
+     */
     override val publicKeyAsBase64Url: String?
         get() {
             return mPublicKey?.stringParam()
         }
 
+    /**
+     * Return public key in [ByteArray]
+     */
     override val publicKeyAsBytes: ByteArray?
         get() {
             return mPublicKey?.bytes()
@@ -60,35 +78,45 @@ internal class SigningImpl : KeyPair<SigningKey, VerificationKey>, Signing {
     }
 
     override fun sign(message: ByteArray): ByteArray {
-        requireNotNull(mPrivateKey, { "Private key must not be null" })
+        val privateKey = mPrivateKey
 
-        return mPrivateKey!!.sign(message)
+        requireNotNull(privateKey, { "Private key must not be null" })
+
+        return privateKey.sign(message)
     }
 
-    override fun signBase64(message: String): ByteArray {
-        return sign(Crypto.decodeBase64(message))
-    }
+    override fun signAsBase64(message: ByteArray, option: Base64Option): String {
+        val privateKey = mPrivateKey
 
-    override fun signAsBase64(message: ByteArray): String {
-        requireNotNull(mPrivateKey, { "Private key must not be null" })
+        requireNotNull(privateKey, { "Private key must not be null" })
 
-        return mPrivateKey!!.signAsBase64(message)
-    }
-
-    override fun signBase64AsBase64(message: String): String {
-        return signAsBase64(Crypto.decodeBase64(message))
+        return when (option) {
+            Base64Option.URL -> privateKey.signAsBase64(message)
+            else -> CryptoHelper.encodeBase64(sign(message), option)
+        }
     }
 
     override fun verify(signature: ByteArray, message: ByteArray): Boolean {
-        requireNotNull(mPublicKey, { "Public key must not be null" })
+        val publicKey = mPublicKey
 
-        return mPublicKey!!.verify(signature, message)
+        requireNotNull(publicKey, { "Public key must not be null" })
+
+        return publicKey.verify(signature, message)
     }
 
-    override fun verifyBase64(signature: String, message: ByteArray): Boolean {
-        requireNotNull(mPublicKey, { "Public key must not be null" })
+    override fun verifyBase64(
+        signature: String,
+        message: ByteArray,
+        option: Base64Option
+    ): Boolean {
+        val publicKey = mPublicKey
 
-        return mPublicKey!!.verifyBase64(signature, message)
+        requireNotNull(publicKey, { "Public key must not be null" })
+
+        return when (option) {
+            Base64Option.URL -> publicKey.verifyBase64(signature, message)
+            else -> verify(CryptoHelper.decodeBase64(signature, option), message)
+        }
     }
 
     override fun generateLoginToken(): String {
@@ -98,6 +126,9 @@ internal class SigningImpl : KeyPair<SigningKey, VerificationKey>, Signing {
         return Crypto.loginToken(mPrivateKey, mPublicKey)
     }
 
+    /**
+     * Return private key that is encrypted by [password]
+     */
     override fun exportPrivateKey(password: String): String {
         requireNotNull(mPrivateKey, { "Private key must not be null" })
 

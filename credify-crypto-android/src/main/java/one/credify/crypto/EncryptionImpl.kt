@@ -4,31 +4,49 @@ import crypto.Crypto
 import crypto.EncryptionKey
 
 internal class EncryptionImpl : KeyPair<EncryptionKey, EncryptionKey>, Encryption {
+    /**
+     * Return private key in PKCS8 format
+     */
     override val privateKeyAsPKCS8: String?
         get() {
             return mPrivateKey?.string()
         }
 
+    /**
+     * Return private key that is encoded with base64 url
+     */
     override val privateKeyAsBase64Url: String?
         get() {
             return mPrivateKey?.stringParam()
         }
 
+    /**
+     * Return public key in [ByteArray]
+     */
     override val privateKeyAsBytes: ByteArray?
         get() {
             return mPrivateKey?.bytes()
         }
 
+    /**
+     * Return public key in PKCS8 format
+     */
     override val publicKeyAsPKSC8: String?
         get() {
             return mPublicKey?.string()
         }
 
+    /**
+     * Return public key that is encoded with base64 url
+     */
     override val publicKeyAsBase64Url: String?
         get() {
             return mPublicKey?.stringParam()
         }
 
+    /**
+     * Return public key in [ByteArray]
+     */
     override val publicKeyAsBytes: ByteArray?
         get() {
             return mPublicKey?.bytes()
@@ -58,34 +76,76 @@ internal class EncryptionImpl : KeyPair<EncryptionKey, EncryptionKey>, Encryptio
         }
     }
 
+    /**
+     * Return private key that is encrypted by [password]
+     */
     override fun exportPrivateKey(password: String): String {
         requireNotNull(mPrivateKey, { "Private key must not be null" })
 
         return mPrivateKey!!.export(password)
     }
 
+    /**
+     * Encrypt [message]
+     *
+     * @return [ByteArray] that was encrypted
+     */
     override fun encrypt(message: ByteArray): ByteArray {
-        requireNotNull(mPublicKey, { "Public key must not be null" })
+        val publicKey = mPublicKey
 
-        return mPublicKey!!.encrypt(message)
+        requireNotNull(publicKey, { "Public key must not be null" })
+
+        return publicKey.encrypt(message)
     }
 
-    override fun encryptAsBase64(message: String): String {
-        requireNotNull(mPublicKey, { "Public key must not be null" })
+    /**
+     * Encrypt [message] in plain text
+     *
+     * @return a string in base 64 with [option] format that was encrypted
+     */
+    override fun encryptAsBase64(message: String, option: Base64Option): String {
+        val publicKey = mPublicKey
 
-        return mPublicKey!!.encryptAsBase64(message.toByteArray(charset = Charsets.UTF_8))
+        requireNotNull(publicKey, { "Public key must not be null" })
+
+        // String to ByteArray
+        val messageByteArr = message.toByteArray(charset = Charsets.UTF_8)
+
+        return when (option) {
+            Base64Option.URL -> publicKey.encryptAsBase64(messageByteArr)
+            else -> CryptoHelper.encodeBase64(encrypt(messageByteArr), option)
+        }
     }
 
+    /**
+     * Decrypt [message]
+     *
+     * @return [ByteArray] that was decrypted
+     */
     override fun decrypt(message: ByteArray): ByteArray {
-        requireNotNull(mPrivateKey, { "Private key must not be null" })
+        val privateKey = mPrivateKey
 
-        return mPrivateKey!!.decrypt(message)
+        requireNotNull(privateKey, { "Private key must not be null" })
+
+        return privateKey.decrypt(message)
     }
 
-    override fun decryptBase64(message: String): String {
-        requireNotNull(mPrivateKey, { "Private key must not be null" })
+    /**
+     * Decrypt [message] in base 64 [option] format
+     *
+     * @return a string that was decrypted
+     */
+    override fun decryptBase64(message: String, option: Base64Option): String {
+        val privateKey = mPrivateKey
 
-        return mPrivateKey!!.decryptBase64(message).toString(charset = Charsets.UTF_8)
+        requireNotNull(privateKey, { "Private key must not be null" })
+
+        return when (option) {
+            Base64Option.URL -> privateKey.decryptBase64(message).toString(charset = Charsets.UTF_8)
+            else -> decrypt(CryptoHelper.decodeBase64(message, option)).toString(
+                charset = Charsets.UTF_8
+            )
+        }
     }
 
     companion object {

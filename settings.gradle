@@ -1,0 +1,3 @@
+include ':app'
+include ':credify-crypto-android'
+rootProject.name = "Example"

@@ -48,6 +48,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation project(':credify-crypto-android')
     implementation(name:'crypto', ext:'aar')
+    implementation 'com.github.credify-pte-ltd:CredifyCryptoAndroid:update-gradle-file-SNAPSHOT'
 }

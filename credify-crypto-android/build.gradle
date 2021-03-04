@@ -1,6 +1,8 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
+    id 'com.github.dcendents.android-maven'
 }
 
 android {
@@ -8,7 +10,6 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "one.credify.crypto"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1

@@ -169,6 +169,17 @@ internal class SigningImpl : KeyPair<SigningKey, VerificationKey>, Signing {
         return Crypto.newRequestToken(privateKey, clientId, encryptionPublicKey, scopeString, offerCode)
     }
 
+    /**
+     * Generate a identity token needed for signing the PII
+     */
+    override fun generateIdentityToken(entityId: String, source: String, hash: String): String {
+        val privateKey = mPrivateKey
+
+        requireNotNull(privateKey, { "Private key must not be null" })
+
+        return Crypto.newIdentityToken(privateKey, entityId, source, hash)
+    }
+
     companion object {
         fun create(): Signing {
             return SigningImpl()

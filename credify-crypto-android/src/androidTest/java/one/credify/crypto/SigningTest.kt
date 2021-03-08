@@ -134,4 +134,20 @@ class SigningTest {
 
         assertNotNull(requestToken)
     }
+
+    @Test
+    fun generateIdentityTokenTest() {
+        val signingKey = KeyCreator().createSigningKey()
+        val entityId = UUID.randomUUID().toString()
+        val source = "PASSPORT"
+        val hash = CryptoHelper.hashAsBase64(source, Base64Option.URL) // Just for test
+
+        val identityToken = signingKey.generateIdentityToken(
+            entityId = entityId,
+            source = source,
+            hash = hash
+        )
+
+        assertNotNull(identityToken)
+    }
 }

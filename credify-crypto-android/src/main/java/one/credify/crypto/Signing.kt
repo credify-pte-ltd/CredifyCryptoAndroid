@@ -53,4 +53,9 @@ interface Signing : KeyPairExportable {
         scopeList: List<String>,
         offerCode: String?
     ): String
+
+    /**
+     * Generate a identity token needed for signing the PII
+     */
+    fun generateIdentityToken(entityId: String, source: String, hash: String): String
 }

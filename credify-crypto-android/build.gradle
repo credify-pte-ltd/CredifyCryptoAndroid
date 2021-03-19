@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'maven-publish'
     id 'com.github.dcendents.android-maven'
+    id 'com.kezong.fat-aar'
 }
 
 android {
@@ -31,11 +32,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
-    }
 }
 
 dependencies {
@@ -47,5 +43,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation(name:'crypto', ext:'aar')
+    embed files('libs/crypto.aar')
 }

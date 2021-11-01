@@ -1,6 +1,7 @@
 package one.credify.crypto
 
 object Constant {
+    // TODO this data should be get from https://github.com/credify-pte-ltd/fixtures using submodule
     const val ENCRYPTION_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\n" +
             "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA6xGr1bqTn/hu1PN6IdEy\n" +
             "iytFPvQXWOHIDwnuuoMi6HWPTRe/q/TYGR5bEjml10whCTqPP62/iRVt+K5pkSAq\n" +

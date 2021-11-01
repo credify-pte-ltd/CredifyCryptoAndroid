@@ -8,3 +8,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+/crypto/build/.transforms/220a6a289d7764459cf21b38a3bd651e/jetified-crypto/jars/classes.jar
+/crypto/build/.transforms/220a6a289d7764459cf21b38a3bd651e/jetified-crypto/jni/arm64-v8a/libgojni.so
+/crypto/build/.transforms/220a6a289d7764459cf21b38a3bd651e/jetified-crypto/jni/armeabi-v7a/libgojni.so
+/crypto/build/.transforms/220a6a289d7764459cf21b38a3bd651e/jetified-crypto/jni/x86_64/libgojni.so
+/crypto/build/.transforms/220a6a289d7764459cf21b38a3bd651e/jetified-crypto/jni/x86/libgojni.so
+/crypto/build/.transforms/2f64c7ff90a5a28403c785216ab816d5/jetified-crypto-api.jar
+/crypto/build/.transforms/cdec6f9d2723d893c211c200a8c9371a/jetified-crypto.aar
